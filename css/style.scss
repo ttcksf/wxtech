@@ -1,0 +1,638 @@
+@charset "UTF-8";
+@import url("https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&family=Oswald:wght@200;400;700&display=swap");
+
+//color
+$color-blue: #006bb2;
+$color-white: #fff;
+$color-black: #333;
+$color-gray: #c4c4c4;
+
+//fonts
+$font-base: "Noto Sans JP", sans-serif;
+
+//layout-width-inner
+$layout-width-inner: 1440px;
+
+//breakpoint
+$breakpoints: (
+  "sp": "(max-width: 767px)",
+  "tab": "(min-width: 768px) and (max-width: 1024px)",
+  "pc": "(min-width: 1025px)",
+);
+
+//media
+@mixin mq($breakpoint: sp) {
+  @media #{map-get($breakpoints, $breakpoint)} {
+    @content;
+  }
+}
+
+//common
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  text-size-adjust: 100%;
+  font-family: $font-base;
+  font-size: 16px;
+  line-height: 1.6;
+  background: $color-white;
+  overflow-x: hidden;
+  max-width: 100%;
+  word-break: break-all;
+}
+
+img {
+  max-width: 100%;
+  width: 100%;
+  height: auto;
+  border: none;
+  object-fit: cover;
+  vertical-align: bottom;
+}
+
+a {
+  text-decoration: none;
+  transition: 0.3s;
+  cursor: pointer;
+}
+a:hover {
+  opacity: 0.6;
+}
+
+ul {
+  list-style: none;
+}
+input[type="text"],
+input[type="tel"],
+input[type="email"] {
+  width: 100%;
+  font-size: inherit;
+  font-family: $font-base;
+  border: 1px solid $color-black;
+  border-radius: 5px;
+}
+
+input[type="text"]:focus {
+  outline: 0;
+}
+
+input[type="submit"] {
+  width: 100%;
+  font-size: inherit;
+  color: $color-white;
+  border: 1px solid $color-black;
+  background-color: $color-black;
+  transition: 0.3s;
+}
+
+input[type="submit"]:hover {
+  opacity: 0.6;
+}
+
+select {
+  width: 100%;
+  font-size: inherit;
+  color: $color-black;
+  border: 1px solid $color-black;
+}
+select option {
+  color: $color-black;
+}
+
+select option:first-child {
+  display: none;
+}
+textarea {
+  width: 100%;
+  font-size: inherit;
+  color: $color-black;
+  border: 1px solid $color-black;
+  resize: none;
+}
+::placeholder {
+  opacity: 1;
+  color: $color-black;
+}
+.SPACER--60 {
+  height: 60px;
+}
+.SPACER--80 {
+  height: 80px;
+}
+.SPACER--100 {
+  height: 100px;
+}
+.SPACER--130 {
+  height: 130px;
+}
+.SPACER--160 {
+  height: 160px;
+}
+.SPACER--200 {
+  height: 200px;
+}
+.SP--NONE {
+  display: block;
+  @include mq(sp) {
+    display: none;
+  }
+}
+.TAB--NONE {
+  display: block;
+  @include mq(tab) {
+    display: none;
+  }
+  @include mq(sp) {
+    display: none;
+  }
+}
+
+.inner {
+  max-width: $layout-width-inner;
+  padding: 0 150px;
+  margin: 0 auto;
+  @include mq(sp) {
+    padding: 0 15px;
+  }
+}
+
+//header
+.header {
+  background: $color-white;
+  height: 100px;
+  max-width: 100%;
+  width: 100%;
+  position: sticky;
+  top: 0;
+  box-shadow: 0 3px 3px rgba($color: #000000, $alpha: 0.6);
+  z-index: 100;
+  @include mq(sp) {
+    height: 60px;
+  }
+}
+
+.header__inner {
+  display: flex;
+  align-items: center;
+  height: inherit;
+  width: 100%;
+  justify-content: center;
+  display: table;
+}
+
+.header__logo {
+  width: 70%;
+  display: table-cell;
+  height: 80px;
+  text-align: center;
+  a {
+    display: inline-block;
+    width: 100%;
+    text-align: center;
+    height: 100%;
+    img {
+      max-width: 325px;
+      height: 100%;
+      margin: 0;
+    }
+  }
+}
+
+.drawer {
+  width: 30%;
+  display: table-cell;
+  text-align: right;
+  position: relative;
+  width: 45px;
+  height: 45px;
+  //inputのcheckboxは非表示
+  &__checkbox {
+    display: none;
+  }
+  //ハンバーガーアイコン
+  &__icon {
+    cursor: pointer;
+    display: block;
+    width: inherit;
+    height: inherit;
+    position: fixed;
+    top: 30px;
+    bottom: 0;
+    @include mq(sp) {
+      top: 10px;
+    }
+    //ハンバーガーアイコンの線
+    &-parts,
+    &-parts::before,
+    &-parts::after {
+      background: $color-gray;
+      display: block;
+      width: 70px;
+      height: 4px;
+      position: absolute;
+      top: 0;
+      right: 0;
+      left: 0;
+      bottom: 0;
+      margin: auto;
+    }
+    &-parts::before,
+    &-parts::after {
+      content: "";
+    }
+    &-parts::before {
+      top: 26px;
+    }
+    &-parts::after {
+      top: -26px;
+    }
+  }
+  //開いた時のメインエリアを暗く
+  &__overlay {
+    background: $color-black;
+    opacity: 0;
+    pointer-events: none;
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    top: 0;
+    right: 0;
+  }
+  //ドロワーメニュー
+  &__menu {
+    background: $color-white;
+    color: $color-black;
+    max-width: 100%;
+    width: 320px;
+    height: 100vh;
+    overflow-y: auto;
+    //スクロール
+    position: fixed;
+    top: 0;
+    right: -320px;
+    .drawer__item {
+      display: block;
+      &:not(:first-child) {
+        margin-top: 10px;
+      }
+    }
+    .drawer__item-inner {
+      font-size: 18px;
+      font-weight: 700;
+      color: $color-black;
+    }
+  }
+  //z-index
+  &__icon {
+    z-index: 104;
+  }
+  &__menu {
+    z-index: 103;
+  }
+  &__overlay {
+    z-index: 101;
+  }
+  //アイコンをクリックしたら
+  &__checkbox:checked ~ {
+    .drawer__icon {
+      .drawer__icon-parts {
+        background: transparent;
+      }
+      .drawer__icon-parts::before {
+        transform: rotate(-45deg);
+        top: 0;
+      }
+      .drawer__icon-parts::after {
+        transform: rotate(45deg);
+        top: 0;
+      }
+    }
+    //メインエリアを暗くする
+    .drawer__overlay {
+      opacity: 0.3;
+      pointer-events: auto;
+    }
+    //メニューを出す
+    .drawer__menu {
+      right: 0;
+      @include mq(sp) {
+        max-width: 230px;
+      }
+      ul {
+        width: 200px;
+        margin-left: auto;
+        margin-top: 100px;
+        margin-right: auto;
+      }
+    }
+    .drawer__close {
+      left: 0;
+    }
+  }
+  //動きをスムーズに
+  &__icon-parts,
+  &__icon-parts::after,
+  &__icon-parts::before,
+  &__overlay,
+  &__menu {
+    transition: all 0.7s;
+  }
+  &__close {
+    width: 100%;
+    height: 100%;
+    background: transparent;
+    position: fixed;
+    top: 0;
+    left: 100%;
+    z-index: 102;
+    transition: 0.5s;
+  }
+}
+
+//now_calender
+.now__calender {
+}
+.month__wx {
+  span {
+    display: inline-block;
+    margin-right: 20px;
+  }
+}
+.table {
+  font-size: 24px;
+  border-collapse: collapse;
+  border-top: 2px solid $color-black;
+}
+.table__date {
+  text-align: center;
+  th {
+      background: $color-gray;
+  }
+}
+.table__wx {
+  text-align: center;
+  td {
+    img {
+    }
+  }
+}
+.table__mental {
+  text-align: center;
+  td {
+    img {
+    }
+  }
+}
+th,
+td {
+  padding: 20px;
+  border: solid 1px $color-black;
+  vertical-align: middle;
+}
+
+//now__mental
+.now__mental {
+}
+.now__mental--inner {
+}
+.card__items {
+  display: flex;
+  flex-flow: row wrap;
+  align-items: stretch;
+  justify-content: space-between;
+  box-shadow: 0 3px 6px rgba($color: #000000, $alpha: 0.16);
+  @include mq(sp) {
+    display: block;
+  }
+}
+.card__wrapper {
+  width: 20%;
+  height: auto;
+  position: relative;
+  height: 300px;
+  &::before {
+    content: "";
+    display: block;
+    padding-top: 100%;
+  }
+  @include mq(sp) {
+    width: 100%;
+  }
+}
+.card__item {
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  padding: 20px;
+  border: 1px solid $color-black;
+  &::before {
+    content: "";
+    // height: 100%;
+    vertical-align: middle;
+    width: 0px;
+    display: inline-block;
+  }
+  img {
+    max-width: 100%;
+    height: auto;
+    max-height: 100%;
+  }
+}
+
+//today__action
+.today__action {
+}
+.today__action--form {
+}
+.today__action--wrapper {
+}
+.today__action--dl {
+  display: flex;
+  justify-content: space-between;
+  height: 50px;
+}
+.today__action--select {
+  @include mq(pc) {
+    width: 20%;
+  }
+  width: 100%;
+  height: 100%;
+  select {
+    height: 100%;
+    font-family: $font-base;
+    font-weight: 700;
+    appearance: none;
+    border-radius: 0;
+    padding: 5px 10px;
+    border: 1px solid $color-gray;
+    font-size: 24px;
+    box-shadow: none;
+    background: $color-gray url(../img/arrow-mark.png) no-repeat right 12px
+      center / 14px 8px;
+    @include mq(tab) {
+      font-size: 18px;
+    }
+    @include mq(sp) {
+      font-size: 16px;
+    }
+    option {
+      color: $color-black;
+      &:first-child {
+        display: none;
+      }
+    }
+  }
+}
+.today__action--input {
+  @include mq(pc) {
+    width: 40%;
+  }
+  width: 100%;
+  height: 100%;
+  input {
+    width: 100%;
+    font-size: 24px;
+    color: $font-base;
+    border: 1px solid $color-black;
+    border-radius: 0;
+    height: 100%;
+    &:focus {
+      outline: 0;
+    }
+  }
+}
+.today__action--btn {
+  text-align: center;
+  height: 100%;
+  @include mq(pc) {
+    width: 20%;
+  }
+  @include mq(tab) {
+    margin-top: 40px;
+  }
+  @include mq(sp) {
+    margin-top: 30px;
+  }
+  input {
+    width: 100%;
+    font-size: 24px;
+    color: $color-white;
+    border: 1px solid $color-black;
+    background-color: $color-black;
+    transition: 0.3s;
+    height: 100%;
+    border-radius: 10px;
+    &:hover {
+      opacity: 0.6;
+    }
+  }
+}
+
+//old__calender
+.old__calender {
+}
+.table__old {
+  border-collapse: collapse;
+  border: 1px solid $color-black;
+  background: $color-white;
+  font-size: 24px;
+  width: 100%;
+  table-layout: fixed;
+}
+.table__old--list {
+  text-align: center;
+  th {
+    background: $color-gray;
+    color: $color-white;
+    border: 1px solid $color-black;
+    &:first-child {
+      width: 200px;
+    }
+    &:last-child {
+      width: 300px;
+    }
+  }
+}
+.table__old--wx {
+  td {
+    text-align: center;
+    border: 1px solid $color-black;
+    p {
+      font-size: 24px;
+    }
+    img {
+      width: 60%;
+    }
+  }
+}
+.share {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    h2{
+        width: 40%;
+        text-align: center;
+    }
+}
+.facebook {
+  background-color: #2e4a88;
+  box-shadow: 0 4px 0 #1b3d82;
+  text-shadow: 0 -1px -1px #1b3d82;
+
+  display: inline-block;
+  position: relative;
+  font-family: Arial;
+  font-size: 14px;
+  font-weight: bold;
+  text-align: center;
+  text-decoration: none;
+  color: $color-white;
+  border-radius: 5px;
+  padding: 14px 80px;
+  margin-right: 20px;
+}
+.facebook:hover {
+  background-color: #354f84;
+}
+.facebook:active {
+  top: 2px;
+  box-shadow: 0 2px 0 #1b3d82;
+}
+.twitter {
+  background-color: #008dde;
+  box-shadow: 0 4px 0 #0078bd;
+
+  display: inline-block;
+  position: relative;
+  font-family: Arial;
+  font-size: 14px;
+  font-weight: bold;
+  text-align: center;
+  text-decoration: none;
+  color: $color-white;
+  border-radius: 5px;
+  padding: 14px 80px;
+}
+.twitter:active {
+  top: 2px;
+  box-shadow: 0 2px 0 #0078bd;
+}
+.twitter:hover {
+  background-color: #1397d8;
+}
+
+.footer{
+    width: 100%;
+    background:$color-blue;
+    color: $color-white;
+    text-align: center;
+    padding: 10px 0;
+}

@@ -1,3 +1,31 @@
+<?php
+  session_start();
+  require('dbconnect.php');
+  if(isset($_SESSION['id']) && $_SESSION['time'] + 3600 > time()){
+    $_SESSION['time'] = time();
+    $members = $db->prepare('SELECT * FROM members WHERE id=?');
+    $members->execute(array($_SESSION['id']));
+    $member = $members->fetch();
+  }else{
+    header('Location: login.php');
+    exit();
+  }
+
+  if(!empty($_POST)){
+    if($_POST['message'] !== ''){
+      $message = $db->prepare('INSERT INTO posts SET member_id=?, message=?, created=NOW()');
+      $message->execute(array(
+        $member['id'],
+        $_POST['message']
+      ));
+
+      header('Location: index.php');
+      exit();
+    }
+  }
+
+  $posts = $db->query('SELECT m.name, p.* FROM members m,posts p WHERE m.id=p.member_id ORDER BY p.created DESC');
+?>
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -18,7 +46,7 @@
   	<div style="text-align: right"><a href="logout.php">ログアウト</a></div>
     <form action="" method="post">
       <dl>
-        <dt>○○さん、メッセージをどうぞ</dt>
+        <dt><?php print(htmlspecialchars($member['name'], ENT_QUOTES));?>さん、メッセージをどうぞ</dt>
         <dd>
           <textarea name="message" cols="50" rows="5"></textarea>
           <input type="hidden" name="reply_post_id" value="" />
@@ -30,18 +58,13 @@
         </p>
       </div>
     </form>
-
+  <?php foreach ($posts as $post):?>
     <div class="msg">
-    <img src="member_picture" width="48" height="48" alt="" />
-    <p><span class="name">（）</span>[<a href="index.php?res=">Re</a>]</p>
-    <p class="day"><a href="view.php?id="></a>
-<a href="view.php?id=">
-返信元のメッセージ</a>
-[<a href="delete.php?id="
-style="color: #F33;">削除</a>]
+    <p><?php print(htmlspecialchars($post['message'], ENT_QUOTES));?><span class="name">（<?php print(htmlspecialchars($post['name'], ENT_QUOTES));?>）</span></p>
+    <p class="day"><a href="view.php?id="><?php print(htmlspecialchars($post['created'], ENT_QUOTES));?></a>
     </p>
     </div>
-
+  <?php endforeach;?>
 <ul class="paging">
 <li><a href="index.php?page=">前のページへ</a></li>
 <li><a href="index.php?page=">次のページへ</a></li>

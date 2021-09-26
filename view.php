@@ -25,7 +25,7 @@ $posts->execute(array($_REQUEST['id']));
 <body>
   <div id="wrap">
     <div id="head">
-      <h1>ひとこと掲示板</h1>
+      <h1>W.news</h1>
     </div>
     <div id="content">
       <p>&laquo;<a href="index.php">一覧にもどる</a></p>

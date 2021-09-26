@@ -24,52 +24,24 @@
             return $str_imgTag;
         }
         $str_weather = strval($int_weather);
-//        $str_sWeather = substr($str_weather, 0, 1);
+        $str_sWeather = substr($str_weather, 0, 1);
 //        $str_eWeather = substr($str_weather, 3, 1);
-        switch ($str_weather){
-        case "100":
+        switch ($str_sWeather){
+        case "1":
             //晴れ
-            $str_imgTag = '<img src="/img/Frame.png" alt="晴れ">';
+            $str_imgTag = '<img src="/img/Frame1.png" alt="晴れ:' . $str_weather .'">';
             break;
-        case "200":
+        case "2":
             //くもり
-            $str_imgTag = '<img src="/img/Frame.png" alt="くもり">';
+            $str_imgTag = '<img src="/img/Frame2.png" alt="くもり:' . $str_weather .'">';
             break;
-        case "300":
+        case "3":
             //雨
-            $str_imgTag = '<img src="/img/Frame.png" alt="雨">';
+            $str_imgTag = '<img src="/img/Frame3.png" alt="雨:' . $str_weather .'">';
             break;
-        case "400":
+        case "4":
             //雪
-            $str_imgTag = '<img src="/img/Frame.png" alt="雪">';
-            break;
-        case "430":
-            //みぞれ
-            $str_imgTag = '<img src="/img/Frame.png" alt="みぞれ">';
-            break;
-        case "500":
-            //快晴
-            $str_imgTag = '<img src="/img/Frame.png" alt="快晴">';
-            break;
-        case "550":
-            //猛暑
-            $str_imgTag = '<img src="/img/Frame.png" alt="猛暑">';
-            break;
-        case "600":
-            //うすぐもり
-            $str_imgTag = '<img src="/img/Frame.png" alt="うすぐもり">';
-            break;
-        case "650":
-            //小雨
-            $str_imgTag = '<img src="/img/Frame.png" alt="小雨">';
-            break;
-        case "850":
-            //大雨・嵐
-            $str_imgTag = '<img src="/img/Frame.png" alt="大雨・嵐">';
-            break;
-        case "950":
-            //大雪
-            $str_imgTag = '<img src="/img/Frame.png" alt="大雪">';
+            $str_imgTag = '<img src="/img/Frame4.png" alt="雪:' . $str_weather .'">';
             break;
         default:
             $str_imgTag = '<img src="/img/Frame.png" alt="不明:' . $str_weather .'">';

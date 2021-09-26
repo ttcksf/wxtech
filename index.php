@@ -13,11 +13,12 @@ if (isset($_SESSION['id']) && $_SESSION['time'] + 3600 > time()) {
 
 if (!empty($_POST)) {
   if ($_POST['message'] !== '') {
-    $message = $db->prepare('INSERT INTO posts SET member_id=?, message=?, kind=?, created=NOW()');
+    $message = $db->prepare('INSERT INTO posts SET member_id=?, message=?, kind=?, mental=?, created=NOW()');
     $message->execute(array(
       $member['id'],
       $_POST['message'],
-      $_POST['kind']
+      $_POST['kind'],
+      $_POST['mental']
     ));
 
     header('Location: index.php');
@@ -64,7 +65,7 @@ $posts = $db->query('SELECT m.name, p.* FROM members m,posts p WHERE m.id=p.memb
 
   <section class="now__calender inner">
     <div class="SPACER--60"></div>
-    <h1 class="month__wx"><span>10月</span><?php print(htmlspecialchars($member['name'], ENT_QUOTES)); ?>の天気予報</h1>
+    <h1 class="month__wx"><span>10月</span><?php print(htmlspecialchars($member['name'], ENT_QUOTES)); ?>の天気とメンタル予報</h1>
     <table class="table">
       <tr class="table__date">
         <th>日付</th>
@@ -100,42 +101,13 @@ $posts = $db->query('SELECT m.name, p.* FROM members m,posts p WHERE m.id=p.memb
     <div class="SPACER--100"></div>
   </section>
 
-  <section class="now__mental inner">
-    <h1>あなたの今日のメンタルは？</h1>
-    <div class="now__mental--inner">
-      <div class="card__items">
-        <div class="card__wrapper">
-          <div class="card__item">
-            <img src="img/verygood.png" alt="">
-          </div>
-        </div>
-        <div class="card__wrapper">
-          <div class="card__item">
-            <img src="img/good.png" alt="">
-          </div>
-        </div>
-        <div class="card__wrapper">
-          <div class="card__item">
-            <img src="img/bad.png" alt="">
-          </div>
-        </div>
-        <div class="card__wrapper">
-          <div class="card__item">
-            <img src="img/verybad.png" alt="">
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="SPACER--100"></div>
-  </section>
-
   <section class="today__action inner">
     <h1>あなたの今日のご予定は？</h1>
     <div class="today__action--form">
       <form action="" method="post" class="today__action--wrapper">
         <dl class="today__action--dl">
           <div class="today__action--select">
-            <select name="kind" id="your-label">
+            <select name="kind" id="kind-label">
               <?php $kind = ['job'=>'仕事', 'hobby'=>'遊び', 'house'=>'家事', 'study'=>'勉強', 'buy'=>'買い物', 'trip'=>'旅行', 'sports'=>'運動', 'hospital'=>'病院'];
                 foreach($kind as $kind_key => $kind_val){
                   $kind .= "<option value='". $kind_key;
@@ -143,14 +115,17 @@ $posts = $db->query('SELECT m.name, p.* FROM members m,posts p WHERE m.id=p.memb
                 }
               ?>
               <?php echo $kind;?>
-              <!-- <option value="job">仕事</option>
-              <option value="hobby">遊び</option>
-              <option value="house">家事</option>
-              <option value="study">勉強</option>
-              <option value="buy">買い物</option>
-              <option value="trip">旅行</option>
-              <option value="sports">運動</option>
-              <option value="hospital">病院</option> -->
+            </select>
+          </div>
+          <div class="today__mental--select">
+            <select name="mental" id="mental-label">
+              <?php $mental = ['verygood'=>'とても良い', 'good'=>'良い', 'bad'=>'悪い', 'verybad'=>'とても悪い'];
+                foreach($mental as $mental_key => $mental_val){
+                  $mental .= "<option value='". $mental_key;
+                  $mental .= "'>". $mental_val. "</option>";
+                }
+              ?>
+              <?php echo $mental;?>
             </select>
           </div>
           <div class="today__action--input">

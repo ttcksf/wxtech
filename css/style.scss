@@ -370,7 +370,7 @@ textarea {
 .table__date {
   text-align: center;
   th {
-      background: $color-gray;
+    background: $color-gray;
   }
 }
 .table__wx {
@@ -461,7 +461,7 @@ td {
 }
 .today__action--select {
   @include mq(pc) {
-    width: 20%;
+    width: 15%;
   }
   width: 100%;
   height: 100%;
@@ -491,6 +491,39 @@ td {
     }
   }
 }
+.today__mental--select {
+  @include mq(pc) {
+    width: 15%;
+  }
+  width: 100%;
+  height: 100%;
+  select {
+    height: 100%;
+    font-family: $font-base;
+    font-weight: 700;
+    appearance: none;
+    border-radius: 0;
+    padding: 5px 10px;
+    border: 1px solid $color-gray;
+    font-size: 24px;
+    box-shadow: none;
+    background: $color-gray url(../img/arrow-mark.png) no-repeat right 12px
+      center / 14px 8px;
+    @include mq(tab) {
+      font-size: 18px;
+    }
+    @include mq(sp) {
+      font-size: 16px;
+    }
+    option {
+      color: $color-black;
+      &:first-child {
+        display: none;
+      }
+    }
+  }
+}
+
 .today__action--input {
   @include mq(pc) {
     width: 40%;
@@ -574,13 +607,13 @@ td {
   }
 }
 .share {
-    display: flex;
-    align-items: center;
-    justify-content: space-around;
-    h2{
-        width: 40%;
-        text-align: center;
-    }
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  h2 {
+    width: 40%;
+    text-align: center;
+  }
 }
 .facebook {
   background-color: #2e4a88;
@@ -629,10 +662,10 @@ td {
   background-color: #1397d8;
 }
 
-.footer{
-    width: 100%;
-    background:$color-blue;
-    color: $color-white;
-    text-align: center;
-    padding: 10px 0;
+.footer {
+  width: 100%;
+  background: $color-blue;
+  color: $color-white;
+  text-align: center;
+  padding: 10px 0;
 }

@@ -513,7 +513,7 @@ td {
 
 @media (min-width: 1025px) {
   .today__action--select {
-    width: 20%;
+    width: 15%;
   }
 }
 
@@ -550,6 +550,53 @@ td {
 }
 
 .today__action--select select option:first-child {
+  display: none;
+}
+
+.today__mental--select {
+  width: 100%;
+  height: 100%;
+}
+
+@media (min-width: 1025px) {
+  .today__mental--select {
+    width: 15%;
+  }
+}
+
+.today__mental--select select {
+  height: 100%;
+  font-family: "Noto Sans JP", sans-serif;
+  font-weight: 700;
+  -webkit-appearance: none;
+     -moz-appearance: none;
+          appearance: none;
+  border-radius: 0;
+  padding: 5px 10px;
+  border: 1px solid #c4c4c4;
+  font-size: 24px;
+  -webkit-box-shadow: none;
+          box-shadow: none;
+  background: #c4c4c4 url(../img/arrow-mark.png) no-repeat right 12px center/14px 8px;
+}
+
+@media (min-width: 768px) and (max-width: 1024px) {
+  .today__mental--select select {
+    font-size: 18px;
+  }
+}
+
+@media (max-width: 767px) {
+  .today__mental--select select {
+    font-size: 16px;
+  }
+}
+
+.today__mental--select select option {
+  color: #333;
+}
+
+.today__mental--select select option:first-child {
   display: none;
 }
 

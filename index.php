@@ -13,10 +13,11 @@ if (isset($_SESSION['id']) && $_SESSION['time'] + 3600 > time()) {
 
 if (!empty($_POST)) {
   if ($_POST['message'] !== '') {
-    $message = $db->prepare('INSERT INTO posts SET member_id=?, message=?, created=NOW()');
+    $message = $db->prepare('INSERT INTO posts SET member_id=?, message=?, kind=?, created=NOW()');
     $message->execute(array(
       $member['id'],
-      $_POST['message']
+      $_POST['message'],
+      $_POST['kind']
     ));
 
     header('Location: index.php');
@@ -135,14 +136,21 @@ $posts = $db->query('SELECT m.name, p.* FROM members m,posts p WHERE m.id=p.memb
         <dl class="today__action--dl">
           <div class="today__action--select">
             <select name="kind" id="your-label">
-              <option value="job">仕事</option>
+              <?php $kind = ['job'=>'仕事', 'hobby'=>'遊び', 'house'=>'家事', 'study'=>'勉強', 'buy'=>'買い物', 'trip'=>'旅行', 'sports'=>'運動', 'hospital'=>'病院'];
+                foreach($kind as $kind_key => $kind_val){
+                  $kind .= "<option value='". $kind_key;
+                  $kind .= "'>". $kind_val. "</option>";
+                }
+              ?>
+              <?php echo $kind;?>
+              <!-- <option value="job">仕事</option>
               <option value="hobby">遊び</option>
               <option value="house">家事</option>
               <option value="study">勉強</option>
               <option value="buy">買い物</option>
               <option value="trip">旅行</option>
               <option value="sports">運動</option>
-              <option value="hospital">病院</option>
+              <option value="hospital">病院</option> -->
             </select>
           </div>
           <div class="today__action--input">

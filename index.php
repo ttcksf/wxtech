@@ -1,6 +1,7 @@
 <?php
 session_start();
 require('dbconnect.php');
+require('function.php');
 if (isset($_SESSION['id']) && $_SESSION['time'] + 3600 > time()) {
   $_SESSION['time'] = time();
   $members = $db->prepare('SELECT * FROM members WHERE id=?');
@@ -27,6 +28,10 @@ if (!empty($_POST)) {
 }
 
 $posts = $db->query('SELECT m.name, p.* FROM members m,posts p WHERE m.id=p.member_id ORDER BY p.created DESC');
+
+//名古屋lat=35.17,lon=136.88
+$obj_WTInfo = get_wxtechApi(35.17, 136.88);
+
 ?>
 <!DOCTYPE html>
 <html lang="ja">
@@ -65,37 +70,47 @@ $posts = $db->query('SELECT m.name, p.* FROM members m,posts p WHERE m.id=p.memb
 
   <section class="now__calender inner">
     <div class="SPACER--60"></div>
-    <h1 class="month__wx"><span>10月</span><?php print(htmlspecialchars($member['name'], ENT_QUOTES)); ?>の天気とメンタル予報</h1>
+    <?php
+        $date = new DateTime(substr($obj_WTInfo->wxdata[0]->mrf[0]->date, 0, 10));
+        $month = date_format($date, 'm');
+    ?>
+    <h1 class="month__wx"><span><?php echo $month?>月</span><?php print(htmlspecialchars($member['name'], ENT_QUOTES)); ?>の天気とメンタル予報</h1>
     <table class="table">
       <tr class="table__date">
         <th>日付</th>
-        <th>10/1<br>金</th>
-        <th>10/2<br>土</th>
-        <th>10/3<br>日</th>
-        <th>10/4<br>月</th>
-        <th>10/5<br>火</th>
-        <th>10/6<br>水</th>
-        <th>10/7<br>木</th>
+        <?php
+            $weekName = [
+                '日', //0
+                '月', //1
+                '火', //2
+                '水', //3
+                '木', //4
+                '金', //5
+                '土', //6
+            ];
+            for($i = 0; $i < 7; $i++){
+                $date = new DateTime(substr($obj_WTInfo->wxdata[0]->mrf[$i]->date, 0, 10));
+                $week = date_format($date, 'w');
+                $day = date_format($date, 'm/d');
+                echo "<th>".$day."<br>".$weekName[$week]."</th>";
+            }
+        ?>
       </tr>
       <tr class="table__wx">
         <td>天気</td>
-        <td><img src="img/Frame.png" alt=""></td>
-        <td><img src="img/Frame.png" alt=""></td>
-        <td><img src="img/Frame.png" alt=""></td>
-        <td><img src="img/Frame.png" alt=""></td>
-        <td><img src="img/Frame.png" alt=""></td>
-        <td><img src="img/Frame.png" alt=""></td>
-        <td><img src="img/Frame.png" alt=""></td>
+        <?php
+            for($i = 0; $i < 7; $i++){
+                echo "<td>". get_weatherIcon($obj_WTInfo->wxdata[0]->mrf[$i]->wx) . "</td>";
+            }
+        ?>
       </tr>
       <tr class="table__mental">
-        <td>メンタル</td>
-        <td><img src="img/verygood.png" alt=""></td>
-        <td><img src="img/good.png" alt=""></td>
-        <td><img src="img/bad.png" alt=""></td>
-        <td><img src="img/verybad.png" alt=""></td>
-        <td><img src="img/verygood.png" alt=""></td>
-        <td><img src="img/verygood.png" alt=""></td>
-        <td><img src="img/verygood.png" alt=""></td>
+      <td>メンタル</td>
+	    <?php
+	        for($i = 0; $i < 7; $i++){
+	            echo "<td>". get_mentalIcon(mt_rand(0, 3)) . "</td>";
+	        }
+	    ?>
       </tr>
     </table>
     <div class="SPACER--100"></div>
@@ -142,7 +157,10 @@ $posts = $db->query('SELECT m.name, p.* FROM members m,posts p WHERE m.id=p.memb
 
   <section class="old__calender inner">
     <div class="SPACER--60"></div>
-    <h1 class="month__wx">過去に10月1日と似た気象条件の日</h1>
+    <?php
+        $date = new DateTime(substr($obj_WTInfo->wxdata[0]->mrf[0]->date, 0, 10));
+    ?>
+    <h1 class="month__wx">過去に<?php echo date_format($date, 'n月j日'); ?>と似た気象条件の日</h1>
     <table class="table__old">
       <tr class="table__old--list">
         <th>日付</th>
@@ -150,16 +168,30 @@ $posts = $db->query('SELECT m.name, p.* FROM members m,posts p WHERE m.id=p.memb
         <th>メンタル</th>
         <th>行動</th>
       </tr>
-      <tr class="table__old--wx">
-        <td>
-          <p>2021年2月1日</p>
-        </td>
-        <td><img src="img/Frame.png" alt=""></td>
-        <td><img src="img/good.png" alt=""></td>
-        <td>
-          <p>仕事で残業した</p>
-        </td>
-      </tr>
+      <?php
+        //dummy->
+        $int_weather = 100;
+        $f_maxTemp = 30;
+        $f_minTemp = 20;
+        $int_pop = 30;
+        $int_action = 1;
+        //<-dummy
+        $obj_SIM = get_similarWeather($int_weather, $f_maxTemp, $f_minTemp, $int_pop, $int_action);
+        $int_maxCount = count($obj_SIM);
+        if ($int_maxCount > 3) {
+            $int_maxCount = 3;
+        }
+        for($i = 0; $i < $int_maxCount; $i++){
+            $date = new DateTime(substr($obj_SIM[$i]->date, 0, 10));
+            $day = date_format($date, 'Y年n月j日');
+            echo "<tr class='table__old--wx'>";
+            echo "<td><p>". $day ."</p></td>";
+            echo "<td>". get_weatherIcon($obj_SIM[$i]->weather) ."</td>";
+            echo "<td>". get_mentalIcon($obj_SIM[$i]->mental1) ."</td>";
+            echo "<td><p>". $obj_SIM[$i]->action1 ."</p></td>";
+            echo "</tr>";
+        }
+      ?>
     </table>
     <div class="SPACER--60"></div>
     <div class="share">
